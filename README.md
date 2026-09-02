@@ -1,10 +1,4 @@
-Absolutely. Based on your **current PowerPlus progress**, I would update the README so it clearly separates **what is completed, how it was done, the current limitation, and remaining milestones**.
-
-Below is a complete README you can copy directly into your GitHub `README.md`.
-
----
-
-# ⚡ PowerPlus — Household Electricity Demand Forecasting
+# PowerPlus — Household Electricity Demand Forecasting
 
 ## 📌 Project Overview
 
