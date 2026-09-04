@@ -1,0 +1,1081 @@
+# POWERPLUS – ELECTRICITY DEMAND FORECASTING
+
+## Updated Project Roadmap & Task Distribution
+
+---
+
+# 1. TASK DISTRIBUTION
+
+### Phase 1 — Data Preparation
+
+```text
+RAW ELECTRICITY DATA
+        ↓
+✅ DAILY ELECTRICITY DATA
+        ↓
+✅ HOUSEHOLD METADATA
+        ↓
+✅ DAILY WEATHER DATA
+        ↓
+```
+
+| Task                                        | Status      | Responsible    |
+| ------------------------------------------- | ----------- | -------------- |
+| Raw Electricity → Daily Electricity Dataset | ✅ Completed | Aimen            |
+| Clean Household Metadata                    | ✅ Completed | Aimen         |
+| Process Weather Data                        | ✅ Completed | Aimen          |
+| Merge all datasets                          | ✅ Completed | Aimen         |
+| Data Quality Audit                          | ✅ Completed | Aimen         |
+| EDA                                         | ✅ Completed | Aimen         |
+| Feature Engineering                         | 🔜 Next     | Iffrah         |
+| Train/Test Split                            | 🔜 Upcoming | Humna          |
+| Consumption Estimator Model                 | 🔜 Upcoming | Humna          |
+| 7/30-Day Forecast Model                     | 🔜 Upcoming | Humna          |
+| Bill Calculator                             | 🔜 Upcoming | Aimen + Iffrah |
+| Final App/Dashboard                         | 🔜 Upcoming | Aimen          |
+
+---
+
+# 2. CURRENT PROJECT STATUS
+
+The following stages have already been completed:
+
+```text
+Raw Electricity Data
+        ↓
+✅ Daily Electricity Dataset
+        ↓
+✅ Clean Household Metadata
+        ↓
+✅ Daily Weather Data
+        ↓
+✅ Master Dataset
+        ↓
+✅ Data Quality Audit
+        ↓
+✅ EDA
+        ↓
+➡️ FEATURE ENGINEERING  ← CURRENT STAGE
+        ↓
+Train/Test Split
+        ↓
+Consumption Estimator
+        ↓
+7/30-Day Forecast
+        ↓
+Model Evaluation
+        ↓
+Bill Calculator
+        ↓
+Final Application
+```
+
+---
+
+# 3. POWERPLUS – COMPLETE PROJECT STRUCTURE
+
+```text
+POWERPLUS – ELECTRICITY DEMAND FORECASTING
+│
+├── 1. DATA COLLECTION
+│   │
+│   ├── House Electricity Data
+│   │   ├── Islamabad
+│   │   ├── Karachi
+│   │   ├── Lahore
+│   │   ├── Multan
+│   │   ├── Peshawar
+│   │   └── Skardu
+│   │
+│   ├── Household Metadata
+│   │   └── 59 Houses
+│   │
+│   └── Weather Data
+│       ├── Islamabad
+│       ├── Karachi
+│       ├── Lahore
+│       ├── Multan
+│       ├── Peshawar
+│       └── Skardu
+│
+│
+├── 2. DATA UNDERSTANDING
+│   │
+│   ├── House Data
+│   │   ├── Shape
+│   │   ├── Columns
+│   │   ├── Data Types
+│   │   ├── Date Range
+│   │   ├── Missing Values
+│   │   └── Duplicate Rows
+│   │
+│   ├── Metadata
+│   │   ├── Shape
+│   │   ├── Columns
+│   │   ├── Missing Values
+│   │   └── Unique Values
+│   │
+│   └── Weather
+│       ├── Shape
+│       ├── Columns
+│       ├── Date Range
+│       ├── Missing Values
+│       └── Data Types
+│
+│
+├── 3. HOUSE ELECTRICITY DATA PROCESSING ✅
+│   │
+│   ├── Raw Minute-Level Data
+│   │
+│   ├── Data Cleaning
+│   │   ├── Datetime → datetime
+│   │   ├── Usage → numeric
+│   │   ├── Invalid datetime handling
+│   │   ├── Missing usage handling
+│   │   └── Duplicate checking
+│   │
+│   ├── Minute → Hour
+│   │   └── Numeric power values → MEAN
+│   │
+│   ├── Hour → Day
+│   │   └── Hourly consumption → Daily kWh
+│   │
+│   └── Target
+│       └── Electricity_Consumption_kWh
+│
+│   Output:
+│   └── final_daily_electricity.csv
+│
+│
+├── 4. METADATA PROCESSING ✅
+│   │
+│   ├── Clean Column Names
+│   ├── Convert Numeric Columns
+│   ├── Handle Missing Values
+│   ├── Standardize Categories
+│   ├── Standardize Appliance Quantities
+│   │
+│   └── Household Characteristics
+│       ├── House Type
+│       ├── Property Area
+│       ├── Covered Area
+│       ├── Rooms
+│       ├── Floors
+│       └── People
+│
+│   Output:
+│   └── clean_metadata.csv
+│
+│
+├── 5. WEATHER DATA PROCESSING ✅
+│   │
+│   ├── Clean Datetime
+│   ├── Handle Missing Values
+│   ├── Standardize City
+│   ├── Convert Measurements
+│   └── Daily Aggregation
+│       ├── Temperature → MEAN
+│       ├── Humidity → MEAN
+│       ├── Dew → MEAN
+│       ├── Precipitation → SUM
+│       ├── Wind Speed → MEAN
+│       ├── Wind Direction → MEAN
+│       ├── Pressure → MEAN
+│       ├── Solar Radiation → MEAN
+│       ├── Solar Energy → SUM
+│       └── UV Index → MEAN
+│
+│   Output:
+│   └── daily_weather.csv
+│
+│
+├── 6. DATA INTEGRATION / MERGE ✅
+│   │
+│   ├── Daily Electricity
+│   │
+│   ├── Household Metadata
+│   │
+│   └── Daily Weather
+│
+│              ↓
+│
+│       MERGE DATASETS
+│
+│       Keys:
+│       ├── House
+│       ├── City
+│       └── Date
+│
+│              ↓
+│
+│       MASTER DATASET
+│
+│   Output:
+│   └── master_electricity_dataset.csv
+│
+│
+├── 7. DATA QUALITY AUDIT ✅
+│   │
+│   ├── Missing Values
+│   ├── Duplicate Rows
+│   ├── Duplicate House + Date
+│   ├── Date Coverage
+│   ├── Date Gaps
+│   ├── Negative Consumption
+│   ├── Impossible Values
+│   ├── Target Distribution
+│   ├── Zero-Variance Features
+│   ├── Leakage Check
+│   └── Outlier Investigation
+│
+│
+├── 8. EXPLORATORY DATA ANALYSIS (EDA) ✅
+│   │
+│   ├── Target Distribution
+│   ├── Consumption Over Time
+│   ├── Consumption by City
+│   ├── Consumption by House
+│   ├── Monthly Consumption
+│   ├── Day-of-Week Consumption
+│   ├── Temperature vs Consumption
+│   ├── Population vs Consumption
+│   ├── Property Area vs Consumption
+│   ├── Covered Area vs Consumption
+│   ├── Rooms vs Consumption
+│   ├── Appliance vs Consumption
+│   ├── Categorical Feature Analysis
+│   ├── Correlation Analysis
+│   ├── Zero-Variance Analysis
+│   ├── Outlier Analysis
+│   └── Highest-Consumption Household Analysis
+│
+│
+├── 9. FEATURE ENGINEERING 🔜 CURRENT STAGE
+│   │
+│   ├── Date Features
+│   │   ├── Year
+│   │   ├── Month
+│   │   ├── Day
+│   │   ├── Day of Week
+│   │   ├── Weekend
+│   │   └── Season
+│   │
+│   ├── Household Features
+│   │   ├── People
+│   │   ├── Property Area
+│   │   ├── Covered Area
+│   │   ├── Rooms
+│   │   ├── Floors
+│   │   └── Build Year
+│   │
+│   ├── Appliance Features
+│   │   ├── AC Quantity
+│   │   ├── Fan Quantity
+│   │   ├── Refrigerator
+│   │   ├── Washing Machine
+│   │   ├── LED Bulbs
+│   │   ├── Water Pump
+│   │   ├── Water Dispenser
+│   │   ├── Geyser
+│   │   ├── Electric Heater
+│   │   └── Other Appliances
+│   │
+│   ├── Weather Features
+│   │   ├── Temperature
+│   │   ├── Humidity
+│   │   ├── Dew
+│   │   ├── Precipitation
+│   │   ├── Wind Speed
+│   │   └── Pressure
+│   │
+│   └── Forecast Features
+│       ├── Lag 1 Day
+│       ├── Lag 7 Days
+│       ├── Rolling 7 Days
+│       └── Rolling 30 Days
+│
+│
+├── 10. TRAIN / TEST SPLIT
+│   │
+│   └── Time-Based Split
+│       ├── Training Data
+│       └── Testing Data
+│
+│
+├── 11. MODEL 1 – CONSUMPTION ESTIMATOR
+│   │
+│   ├── User / Household Information
+│   │   ├── City
+│   │   ├── House Type
+│   │   ├── House Size
+│   │   ├── Covered Area
+│   │   ├── People
+│   │   ├── Rooms
+│   │   ├── Floors
+│   │   └── Appliances
+│   │
+│   ├── Regression Model
+│   │
+│   └── Output
+│       └── Estimated Daily kWh
+│
+│
+├── 12. MODEL 2 – 7/30 DAY FORECAST
+│   │
+│   ├── Historical Consumption
+│   ├── Weather
+│   ├── Calendar Features
+│   ├── Lag Features
+│   └── Rolling Features
+│
+│              ↓
+│
+│       FORECASTING MODEL
+│
+│              ↓
+│
+│       ├── Next 7 Days
+│       └── Next 30 Days
+│
+│
+├── 13. MODEL EVALUATION
+│   │
+│   ├── MAE
+│   ├── RMSE
+│   ├── R²
+│   └── Actual vs Predicted
+│
+│
+├── 14. BILL CALCULATOR
+│   │
+│   ├── Predicted kWh
+│   ├── Monthly Consumption
+│   ├── Applicable Tariff
+│   ├── Slabs
+│   └── Estimated Bill
+│
+│
+└── 15. FINAL APPLICATION / DASHBOARD
+    │
+    ├── User Inputs
+    │   ├── City
+    │   ├── House Type
+    │   ├── House Size
+    │   ├── Covered Area
+    │   ├── People
+    │   ├── Rooms
+    │   ├── Floors
+    │   └── Appliances
+    │
+    ├── Consumption Prediction
+    │       ↓
+    │   Estimated Daily kWh
+    │
+    ├── Monthly Consumption
+    │       ↓
+    │   Estimated Monthly kWh
+    │
+    ├── Bill Estimation
+    │       ↓
+    │   Estimated Rs.
+    │
+    └── Forecast
+            ↓
+        Next 7 / 30 Days
+```
+
+---
+
+# 4. FOLLOW THESE STEPS IN ORDER
+
+## PHASE 1 — PREPARE DATA ✅
+
+### 1. Understand House Data
+
+Inspect:
+
+* Cities
+* Houses
+* Columns
+* Dates
+* Missing values
+* Duplicates
+
+### 2. Process House Electricity Data ✅
+
+```text
+Minute-Level Electricity
+        ↓
+Hourly Mean
+        ↓
+Daily Consumption
+        ↓
+Electricity_Consumption_kWh
+```
+
+Output:
+
+`final_daily_electricity.csv`
+
+### 3. Clean Household Metadata ✅
+
+Clean:
+
+* Column names
+* Numeric values
+* Missing values
+* Categories
+* Appliance quantities
+* Household characteristics
+
+Output:
+
+`clean_metadata.csv`
+
+### 4. Process Weather ✅
+
+```text
+Hourly Weather
+       ↓
+Daily Weather
+```
+
+Output:
+
+`daily_weather.csv`
+
+---
+
+# PHASE 2 — COMBINE DATA ✅
+
+## 5. Merge
+
+```text
+Daily Electricity
+       +
+Household Metadata
+       +
+Daily Weather
+       ↓
+MASTER DATASET
+```
+
+Merge using:
+
+```text
+House + City + Date
+```
+
+Output:
+
+`master_electricity_dataset.csv`
+
+---
+
+# PHASE 3 — ANALYZE ✅
+
+## 6. Data Quality Audit
+
+Checked:
+
+* Missing values
+* Duplicates
+* House + Date duplicates
+* Date range
+* Negative consumption
+* Impossible values
+* Zero-variance features
+* Leakage
+* Outliers
+* Target distribution
+
+## 7. EDA
+
+Analyzed:
+
+* Target distribution
+* City differences
+* House differences
+* Monthly seasonality
+* Day of week
+* Temperature
+* Population
+* Property area
+* Covered area
+* Rooms
+* ACs
+* Appliances
+* Categorical variables
+* Correlations
+* Outliers
+* High-consuming households
+
+### Important EDA Findings
+
+```text
+Temperature correlation       = 0.486
+Dew correlation               = 0.434
+AC correlation                = 0.330
+Ceiling Fans correlation      = 0.239
+No. of Rooms correlation      = 0.237
+Property Area correlation     = 0.232
+Covered Area correlation      = 0.207
+```
+
+There is also a strong **city-level and household-level effect**.
+
+Therefore, the model should not depend on only one or two variables such as temperature.
+
+---
+
+# PHASE 4 — FEATURE ENGINEERING 🔜
+
+## 8. Create Features
+
+Feature engineering will be done **after EDA**, not before.
+
+### A. Calendar Features
+
+```text
+Year
+Month
+Day
+Day_of_Week
+Weekend
+Season
+```
+
+### B. Household Features
+
+```text
+Total_People
+Permanent_Residents
+Children
+Adults
+Seniors
+Property_Area_Marla
+Covered_Area
+No_of_Rooms
+No_of_Floors
+Build_Year
+Number_of_Washrooms
+Number_of_Stores
+Kitchen
+```
+
+### C. Appliance Features
+
+```text
+Air_Conditioners
+Air_Coolers
+Refrigerators
+Washing_Machines
+LED_Bulbs
+Tube_Lights
+Ceiling_Fans
+Wall_Fans
+Stand_Fans
+Water_Dispensers
+Water_Pumps
+Electric_Cooker
+Electric_Heaters
+Electric_Irons
+Microwave_Ovens
+Geysers
+UPS
+Other_Electronic_Devices
+```
+
+### D. Weather Features
+
+```text
+Temperature
+Humidity
+Dew
+Precipitation
+Wind_Speed
+Wind_Direction
+Pressure
+```
+
+Solar Radiation, Solar Energy and UV Index were found to have zero variance and will therefore **not be used as model predictors**.
+
+### E. Forecast Features
+
+For the forecasting model:
+
+```text
+Lag_1
+Lag_7
+Rolling_7
+Rolling_30
+```
+
+These must be calculated using **past consumption only** to prevent data leakage.
+
+---
+
+# PHASE 5 — MODELING
+
+## 9. Model 1 — Consumption Estimator
+
+### User Input
+
+```text
+City
+House Type
+House Size
+Covered Area
+People
+Rooms
+Floors
+Appliances
+```
+
+↓
+
+### Machine Learning Regression Model
+
+↓
+
+### Output
+
+```text
+Estimated Daily Consumption
+        ↓
+        XX kWh/day
+```
+
+This model answers:
+
+> **"Based on this household's characteristics and appliances, how much electricity is it likely to consume per day?"**
+
+---
+
+# 10. Model 2 — 7/30 Day Forecast
+
+For forecasting:
+
+```text
+Historical Consumption
+        +
+Weather
+        +
+Household Characteristics
+        +
+Calendar Features
+        +
+Lag Features
+        +
+Rolling Features
+        ↓
+Forecasting Model
+        ↓
+Next 7 Days
+        OR
+Next 30 Days
+```
+
+This model answers:
+
+> **"Given the household's previous consumption and current/expected conditions, what will its electricity consumption be over the next 7 or 30 days?"**
+
+---
+
+# PHASE 6 — EVALUATION
+
+## 11. Evaluate Both Models
+
+Use:
+
+```text
+MAE
+RMSE
+R²
+```
+
+Also generate:
+
+```text
+Actual vs Predicted
+```
+
+For the forecasting model, evaluation must respect the **time order** of the data.
+
+---
+
+# PHASE 7 — APPLICATION
+
+## 12. Bill Calculation
+
+```text
+Predicted Daily kWh
+        ↓
+Monthly kWh
+        ↓
+Applicable Tariff
+        ↓
+Slabs
+        ↓
+Estimated Electricity Bill
+```
+
+Output:
+
+```text
+Estimated Monthly Consumption
+XXX kWh
+
+Estimated Bill
+Rs. XXXXX
+```
+
+---
+
+# 13. Final User Interface
+
+The final system can be implemented using **Streamlit**.
+
+### User enters:
+
+```text
+House Information
+        ↓
+City
+House Type
+House Size
+Covered Area
+People
+Rooms
+Floors
+
+Appliances
+        ↓
+AC
+Refrigerator
+Fans
+LED Bulbs
+Washing Machine
+Water Pump
+Iron
+Microwave
+Geyser
+etc.
+```
+
+Then:
+
+```text
+                 POWERPLUS
+                     │
+                     ↓
+              User Information
+                     │
+          ┌──────────┼──────────┐
+          ↓          ↓          ↓
+    Consumption     Bill     Forecast
+     Estimator    Calculator
+          ↓          ↓          ↓
+       Daily kWh   Rs.      7-Day Forecast
+          │                   │
+          ↓                   ↓
+      Monthly kWh       30-Day Forecast
+```
+
+---
+
+# 14. HOUSEHOLD CHARACTERISTICS
+
+The metadata contains:
+
+### Household Characteristics
+
+```text
+Owner/Rented
+Total People
+Permanent Residents
+Children
+Adults
+Seniors
+Temporary Residents
+Property Area
+Covered Area
+No. of Floors
+Floor of Residency
+Build Year
+```
+
+### Building Characteristics
+
+```text
+Ceiling Height
+Ceiling Type
+Roof Type
+Flooring Type
+Interior Wall
+Exterior Wall
+No. of Rooms
+Room Dimensions
+Kitchen
+Number of Washrooms
+Number of Stores
+Doors Type
+```
+
+### Appliances
+
+```text
+Air Conditioners
+Air Coolers
+Refrigerators
+Washing Machines
+LED Bulbs
+Tube Lights
+Ceiling Fans
+Wall Fans
+Stand Fans
+Water Dispensers
+Water Pumps
+Electric Cooker
+Electric Heaters
+Electric Irons
+Sewing Machine
+Microwave Ovens
+Geysers
+UPS
+Other Electronic Devices
+```
+
+---
+
+# 15. FINAL DATA INTEGRATION STRATEGY
+
+The complete data flow is:
+
+```text
+                 HOUSE ELECTRICITY
+                       │
+                       ↓
+              Minute-Level Data
+                       │
+                       ↓
+                 Hourly Mean
+                       │
+                       ↓
+                  Daily kWh
+                       │
+                       │
+                       ├──────────────┐
+                       │              │
+                       ↓              ↓
+                 HOUSE DATA       METADATA
+                       │              │
+                       │              ↓
+                       │        Household Features
+                       │
+                       │
+                       └──────┐
+                              │
+                         CITY + DATE
+                              │
+                              ↓
+                         WEATHER DATA
+                              │
+                              ↓
+                       Daily Weather
+                              │
+                              ↓
+                    ┌─────────────────┐
+                    │ MASTER DATASET  │
+                    └─────────────────┘
+                              │
+                              ↓
+                       DATA QUALITY
+                              │
+                              ↓
+                            EDA
+                              │
+                              ↓
+                   FEATURE ENGINEERING
+                              │
+                              ↓
+                       TRAIN / TEST
+                              │
+                  ┌───────────┴───────────┐
+                  ↓                       ↓
+          CONSUMPTION MODEL        FORECAST MODEL
+                  ↓                       ↓
+             Daily kWh              7 / 30 Days
+                  │                       │
+                  └───────────┬───────────┘
+                              ↓
+                       BILL CALCULATOR
+                              │
+                              ↓
+                       FINAL APPLICATION
+```
+
+---
+
+# 16. IMPORTANT MODELING DECISIONS
+
+### House ID
+
+`House` / `House_Number` should **not automatically be treated as ordinary continuous numeric predictors**.
+
+For the forecasting model, household identity can be useful for maintaining each home's historical consumption, but it should not be interpreted as:
+
+```text
+House #40 > House #20
+```
+
+numerically.
+
+### Target
+
+The target is:
+
+```text
+Electricity_Consumption_kWh
+```
+
+Target values should **not be artificially imputed**.
+
+### Outliers
+
+High consumption values will **not be blindly removed** because some high-consuming houses consistently have high consumption and may represent genuine demand.
+
+### Zero Consumption
+
+Zero-consumption days are retained unless later investigation proves that they are data errors.
+
+### Leakage
+
+Original appliance-level electricity consumption columns must not be used as predictors if they directly reveal the target.
+
+### Forecasting
+
+Lag and rolling features must always use **previous observations only**.
+
+### Train/Test
+
+Use a **time-based split**, particularly for forecasting, rather than a random split.
+
+---
+
+# 17. THREE MAIN DATASETS + MASTER DATASET
+
+The project's core processed datasets are now:
+
+### ① Daily Electricity
+
+```text
+final_daily_electricity.csv
+```
+
+Contains:
+
+```text
+Date
+City
+House
+House_Number
+Electricity_Consumption_kWh
+```
+
+### ② Household Metadata
+
+```text
+clean_metadata.csv
+```
+
+Contains:
+
+```text
+Household characteristics
+Building characteristics
+Appliance quantities
+```
+
+### ③ Daily Weather
+
+```text
+daily_weather.csv
+```
+
+Contains:
+
+```text
+City
+Date
+Temperature
+Humidity
+Dew
+Precipitation
+Wind Speed
+Wind Direction
+Pressure
+Solar Radiation
+Solar Energy
+UV Index
+```
+
+### ④ Final Master Dataset
+
+```text
+master_electricity_dataset.csv
+```
+
+Contains:
+
+```text
+Daily Consumption
+        +
+Household Metadata
+        +
+Daily Weather
+```
+
+This is the dataset used for:
+
+```text
+EDA
+   ↓
+Feature Engineering
+   ↓
+Model Development
+```
+
+---
+
+# 18. CURRENT POSITION
+
+```text
+1. Data Understanding             ✅
+2. House Electricity Processing   ✅
+3. Metadata Processing            ✅
+4. Weather Processing             ✅
+5. Data Integration               ✅
+6. Data Quality Audit             ✅
+7. EDA                            ✅
+8. Feature Engineering            🔵 NEXT
+9. Train/Test Split               ⏳
+10. Consumption Estimator         ⏳
+11. 7/30-Day Forecast             ⏳
+12. Model Evaluation              ⏳
+13. Bill Calculator               ⏳
+14. Final Application             ⏳
+```
+
+## NEXT STEP
+
+**We are now at Step 8 — Feature Engineering.**
+
+Before writing the feature-engineering code, we should first define the **exact feature sets separately for:**
+
+1. **Consumption Estimator**
+2. **7/30-Day Forecast Model**
+
+This is important because the two models have different inputs and different leakage risks.
+
+This version now reflects the **actual project status** and keeps the original team responsibilities intact. The next work should start from **Feature Engineering**, not from metadata, weather, merge, audit, or EDA again.
