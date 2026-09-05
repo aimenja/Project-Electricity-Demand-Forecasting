@@ -1,0 +1,28 @@
+{
+  "target": "electricity_kwh",
+  "train_end_date": "2024-08-24",
+  "test_start_date": "2024-08-25",
+  "forecast_city": "Islamabad",
+  "forecast_house": "House#41",
+  "forecast_start_date": "2024-11-28",
+  "best_parameters": {
+    "max_depth": 5,
+    "min_samples_split": 2,
+    "min_samples_leaf": 10,
+    "max_features": null
+  },
+  "leakage_columns_excluded": [
+    "avg_power_kw",
+    "city_1",
+    "coverage_pct",
+    "date",
+    "electricity_kwh",
+    "expected_readings",
+    "house_1",
+    "low_coverage_flag",
+    "max_power_kw",
+    "min_power_kw",
+    "readings"
+  ],
+  "feature_count": 80
+}
