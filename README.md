@@ -1,815 +1,783 @@
-# PowerPlus — Household Electricity Demand Forecasting
+PowerPlus --- Electricity Demand Forecasting
 
-## 📌 Project Overview
+PowerPlus is a machine-learning project for predicting household
+electricity consumption and forecasting future electricity demand using
+historical electricity usage, household characteristics, weather
+conditions, and calendar patterns.
 
-**PowerPlus** is a household electricity demand forecasting project that uses **household characteristics, appliance information, historical electricity consumption, and weather conditions** to predict future electricity demand.
+The project currently covers the complete workflow from raw
+electricity-data processing through feature engineering, ML baseline
+modelling, and short-term demand forecasting.
 
-The main goal is to develop a machine-learning system that can estimate how much electricity a household is likely to consume and eventually provide **7-day and 30-day demand forecasts**.
+Project Status
 
-The project combines:
+Stage                                       Status
 
-* 🏠 Household characteristics
-* ⚡ Appliance information
-* 📊 Historical electricity consumption
-* 🌤️ Historical weather data
-* 📅 Calendar/seasonal information
-* 🤖 Machine learning
-* 📈 Electricity demand forecasting
+Raw electricity data processing             Completed
+Daily electricity consumption calculation   Completed
+Household metadata processing               Completed
+Weather data processing                     Completed
+Data integration                            Completed
+Data quality checks                         Completed
+Feature engineering                         Completed
+Model-ready dataset                         Completed
+ML baseline modelling                       Completed
+Decision Tree tuning                        Completed
+7-day forecasting                           Completed
+30-day forecasting                          Completed
+Final application/dashboard                 Next stage
 
----
+Problem Statement
 
-# 🎯 Problem Statement
+Electricity demand varies across households, cities, seasons, weather
+conditions, and appliance usage.
 
-Household electricity consumption changes according to several factors, including:
+The goal of PowerPlus is to use historical household electricity
+consumption together with household, weather, and calendar information
+to estimate future electricity demand.
 
-* Number of residents
-* Household size
-* Appliances
-* Number of air conditioners
-* Refrigerators
-* Fans
-* Washing machines
-* Water pumps
-* Heating/cooling requirements
-* Temperature
-* Humidity
-* Seasonal patterns
-* Previous electricity consumption
+The project is designed around daily electricity consumption measured in
+kWh.
 
-PowerPlus aims to combine these factors to predict future household electricity demand.
+Project Objectives
 
-The final system is intended to answer:
+The main objectives are to:
 
-> **"Based on this household's characteristics, appliances, recent electricity usage, and expected conditions, how much electricity is it likely to consume?"**
+Convert raw electricity measurements into daily electricity
+consumption.
 
----
+Combine electricity data with household metadata.
 
-# 🗂️ Data Sources
+Integrate city-wise weather information.
 
-The project currently uses three main datasets.
+Perform data-quality checks before modelling.
 
-## 1. Household Metadata
+Engineer historical demand, weather, household, and calendar
+features.
 
-The household metadata contains information about individual houses, including:
+Build a leakage-safe machine-learning baseline.
 
-* House ID
-* City
-* Owner/Rented status
-* Number of residents
-* Children
-* Adults
-* Seniors
-* Property area
-* Covered area
-* Number of floors
-* Construction year
-* Electricity connection type
-* Ceiling information
-* Roof type
-* Flooring type
-* Number of rooms
-* Number of washrooms
-* Air conditioners
-* Air coolers
-* Refrigerators
-* Washing machines
-* LED bulbs
-* Tube lights
-* Ceiling fans
-* Wall fans
-* Stand fans
-* Water dispensers
-* Water pumps
-* Electric cookers
-* Electric heaters
-* Electric irons
-* Microwave ovens
-* Geysers
-* UPS
-* Other electronic devices
+Compare ML performance with simple forecasting baselines.
 
-**File:**
+Forecast electricity demand for the next 7 and 30 days.
 
-```text
+Save the trained model and evaluation results for later application
+use.
+
+Data Sources
+
+PowerPlus uses three main data sources.
+
+1. Electricity Data
+
+The electricity data is stored city-wise:
+
+city-wise_house_dataset/
+├── Islamabad/
+├── Karachi/
+├── Lahore/
+├── Multan/
+├── Peshawar/
+└── Skardu/
+
+The raw electricity files contain time-based electricity usage
+measurements.
+
+The electricity readings are converted from minute-level power
+measurements in kW into daily energy consumption in kWh.
+
+The daily calculation used in the preprocessing notebook is:
+
+Daily Electricity (kWh)
+= Sum of minute-level power readings (kW) / 60
+
+The resulting modelling target is:
+
+electricity_kwh
+
+2. Household Metadata
+
+Household-level information is taken from:
+
 metadata_ultimate.xlsx
-```
 
----
+The metadata includes information such as:
 
-## 2. Historical Electricity Consumption
+Number of residents
 
-The electricity datasets contain household-level electricity readings at approximately **one-minute intervals**.
+Children, adults, and seniors
 
-Example:
+Property area
 
-```text
-datetime              Usage (kW)
-2023-11-01 00:00      0.63
-2023-11-01 00:01      0.64
-2023-11-01 00:02      0.63
-...
-```
+Covered area
 
-The raw readings are measured in **kW**.
+Number of floors
 
-For the forecasting model, the minute-level readings are converted into **daily electricity consumption in kWh**.
+Construction year
 
-### Conversion
+Ceiling and roof information
 
-```text
-Daily kWh = Σ(kW × 1/60)
-```
+Number of rooms
 
-This converts the approximately one-minute power readings into daily energy consumption.
+Kitchen
 
----
+Washrooms
 
-## 3. Historical Weather Data
+Air conditioners
 
-The project currently uses historical weather data instead of relying on a live weather API.
+Refrigerators
 
-Example weather dataset:
+Washing machines
 
-```text
-Islamabad.csv
-```
+Fans
 
-Weather variables include:
+Water pumps
 
-* Temperature
-* Humidity
-* Dew
-* Precipitation
-* Wind Speed
-* Wind Direction
-* Pressure
-* Solar Radiation
-* Solar Energy
-* UV Index
+Electric cookers
 
-The original weather data is hourly.
+Electric heaters
 
-It is aggregated into **daily weather features** so that it can be aligned with the daily electricity consumption data.
+Microwave ovens
 
----
+Geysers
 
-# 🔄 Data Processing Pipeline
+UPS
 
-The current data-processing pipeline is:
+Other electronic devices
 
-```text
+This information provides household characteristics that can help
+explain differences in electricity demand.
+
+3. Weather Data
+
+Historical weather data is available city-wise:
+
+weather_dataset/
+├── Islamabad.csv
+├── Karachi.csv
+├── Lahore.csv
+├── Multan.csv
+├── Peshawar.csv
+└── Skardu.csv
+
+Weather variables used in the project include:
+
+Temperature
+
+Humidity
+
+Dew
+
+Precipitation
+
+Wind speed
+
+Wind direction
+
+Pressure
+
+Solar radiation
+
+Solar energy
+
+UV index
+
+The weather data is aggregated to daily level before integration with
+electricity data.
+
+Historical weather data is used in this project. OpenWeatherMap API is
+not required for the current preprocessing workflow.
+
+Data Processing Pipeline
+
+The preprocessing workflow follows this sequence:
+
 Raw Electricity Data
-        │
-        ▼
-Clean datetime & usage
-        │
-        ▼
-Convert minute-level kW
-to daily kWh
-        │
-        ▼
-Daily Electricity Dataset
-        │
-        ├───────────────┐
-        │               │
-        ▼               ▼
-Household Metadata   Weather CSV
-        │               │
-        │               ▼
-        │          Hourly → Daily
-        │          Weather Features
-        │               │
-        └───────┬───────┘
-                ▼
-          Dataset Merging
-                │
-                ▼
-        Feature Engineering
-                │
-                ▼
-          Data Preprocessing
-                │
-                ▼
-       Decision Tree Regression
-                │
-                ▼
-          Electricity Prediction
-```
-
----
-
-# ✅ Work Completed
-
-## 1. Electricity Data Processing
-
-The raw minute-level electricity readings have been processed.
-
-The data was:
-
-* Loaded using Python/Pandas
-* Converted to datetime
-* Sorted chronologically
-* Grouped by household and date
-* Converted from minute-level kW readings to daily kWh consumption
-
-### Result
-
-The model now works with **daily electricity consumption** instead of thousands of individual minute readings.
-
----
-
-# 2. Weather Data Processing
-
-The historical `Islamabad.csv` weather dataset has been processed.
-
-The hourly observations were aggregated into daily features.
-
-Examples include:
-
-```text
-Temperature_Avg_C
-Temperature_Min_C
-Temperature_Max_C
-Humidity_Avg_pct
-Dew_Avg
-Precipitation_mm
-WindSpeed_Avg
-Pressure_Avg
-SolarRadiation_Avg
-SolarEnergy_Sum
-UVIndex_Avg
-```
-
-This makes the weather data compatible with the daily electricity consumption data.
-
----
-
-# 3. Household + Weather + Electricity Integration
-
-The three types of information are combined.
-
-### Household information
-
-Joined using:
-
-```text
-House
-```
-
-### Weather information
-
-Joined using:
-
-```text
-City + Date
-```
-
-### Electricity information
-
-Identified using:
-
-```text
-House + Date
-```
-
-The resulting dataset represents a household's electricity consumption together with its:
-
-* Household characteristics
-* Appliances
-* Weather
-* Calendar information
-* Historical consumption
-
----
-
-# 4. Calendar Feature Engineering
-
-Date information was transformed into useful machine-learning features.
-
-Features include:
-
-```text
-Year
-Month
-Day
-Day of Week
-Weekend
-Day of Year
-```
-
-Seasonal information was also represented using cyclic transformations.
-
-This allows the model to learn patterns associated with:
-
-* Months
-* Weekdays
-* Weekends
-* Seasonal changes
-
----
-
-# 5. Lag Feature Engineering
-
-Historical electricity consumption is important for demand forecasting.
-
-The following lag features were created:
-
-### `lag_1_kWh`
-
-Previous day's electricity consumption.
-
-```text
-Today ← Yesterday
-```
-
-### `lag_7_kWh`
-
-Electricity consumption seven days earlier.
-
-```text
-Today ← Same day of previous week
-```
-
-### `rolling_7_kWh`
-
-Average electricity consumption over the previous seven days.
-
-These features allow the model to learn the household's recent consumption behavior and weekly patterns.
-
----
-
-# 6. Data Preprocessing
-
-The dataset contains both numerical and categorical features.
-
-### Numerical features
-
-Missing numerical values are handled using **median imputation**.
-
-### Categorical features
-
-Missing categorical values are handled using the **most frequent category**.
-
-Categorical variables are then converted into numerical features using:
-
-```text
-One-Hot Encoding
-```
-
-This makes the data suitable for the Decision Tree model.
-
----
-
-# 7. Target Variable
-
-The target variable is:
-
-```text
-Electricity_Consumption_kWh
-```
-
-The model therefore performs **regression**, because electricity consumption is a continuous numerical value.
-
----
-
-# 8. Train/Test Split
-
-A chronological train/test split was used.
-
-```text
-80% → Training Data
-20% → Testing Data
-```
-
-The data was **not randomly shuffled**.
-
-This is important for a forecasting project because the model should learn from the past and be tested on later observations.
-
-```text
-PAST                         FUTURE
-│                               │
-▼                               ▼
-Training Data              Test Data
-```
-
----
-
-# 9. Machine Learning Model
-
-The current machine-learning model is:
-
-## Decision Tree Regressor
-
-The Decision Tree was selected because the target variable is continuous and the model can learn nonlinear relationships between:
-
-* Household characteristics
-* Appliances
-* Weather
-* Calendar features
-* Historical electricity consumption
-
-Current model configuration includes:
-
-```text
-max_depth = 8
-min_samples_split = 10
-min_samples_leaf = 5
-random_state = 42
-```
-
----
-
-# 10. Initial Model Evaluation
-
-The initial Decision Tree model has been trained and tested.
-
-Current evaluation results:
-
-| Metric |       Result |
-| ------ | -----------: |
-| MAE    | 0.000154 kWh |
-| RMSE   | 0.000383 kWh |
-| R²     |       0.9992 |
-
-An **Actual vs Predicted** visualization has also been generated to compare model predictions with actual electricity consumption.
-
-### Important
-
-These are **initial model results**, not the final performance of the complete PowerPlus forecasting system.
-
-The dataset currently represents a limited number of households, so additional validation is required before making strong claims about generalization.
-
----
-
-# 🌦️ Weather API Issue
-
-## Initial Plan
-
-The original plan was to use **OpenWeatherMap API** to retrieve weather information automatically.
-
-The intended architecture was:
-
-```text
-Consumer enters location
-        │
-        ▼
-OpenWeatherMap API
-        │
-        ▼
-Weather data
-        │
-        ▼
+        ↓
+Minute-Level Cleaning
+        ↓
+Daily Electricity (kWh)
+        ↓
+Household Metadata Cleaning
+        ↓
+Daily Weather Processing
+        ↓
+Data Integration
+        ↓
+Data Quality Checks
+        ↓
 Feature Engineering
-        │
-        ▼
-ML Model
-```
+        ↓
+Model-Ready Dataset
 
-## Problem
+Electricity Data Processing
 
-The OpenWeatherMap API currently returns:
+The electricity-processing notebook:
 
-```text
-HTTP 401 Unauthorized
-```
+Finds the city-wise electricity folders.
 
-because of the available API/subscription access.
+Reads the electricity CSV files.
 
-Therefore, the project is **not currently dependent on the live OpenWeatherMap API**.
+Detects the relevant datetime and usage columns.
 
-## Current Solution
+Standardizes household and city identifiers.
 
-For the model-development stage, historical weather data is being used:
+Converts timestamps to datetime.
 
-```text
-Historical Weather CSV
-        │
-        ▼
+Converts electricity usage to numeric form.
+
+Removes invalid readings.
+
+Removes duplicate timestamps.
+
+Aggregates electricity measurements to daily level.
+
+Calculates daily kWh and coverage information.
+
+Saves the processed daily electricity dataset.
+
+The daily electricity dataset also keeps supporting measurements such
+as:
+
+Number of readings
+
+Average power
+
+Maximum power
+
+Minimum power
+
+Expected readings
+
+Coverage percentage
+
+Low-coverage flag
+
+These fields are useful for data-quality analysis.
+
+Household Metadata Processing
+
+Household metadata is cleaned and standardized before merging with the
+daily electricity data.
+
+The metadata is joined using the household and city identifiers.
+
+The resulting dataset combines:
+
+Household
++
+City
++
+Household characteristics
++
+Appliances
++
+Daily electricity consumption
+
+This allows the model to learn differences between households rather
+than relying only on historical demand.
+
 Weather Processing
-        │
-        ▼
-Daily Weather Features
-        │
-        ▼
-Machine Learning Model
-```
 
-This allows the data-processing and machine-learning pipeline to continue without depending on the external API.
+The city-wise weather files are converted to daily-level features.
 
----
+Daily aggregation includes:
 
-# 🧠 Why Historical Weather Is Still Useful
+Mean temperature
 
-The purpose of weather data during model development is to allow the model to learn relationships such as:
+Mean humidity
 
-```text
-Higher Temperature
-       ↓
-More Cooling
-       ↓
-Higher Electricity Demand
-```
+Mean dew
 
-and:
+Total precipitation
 
-```text
-Lower Temperature
-       ↓
-Possible Heating Demand
-       ↓
-Higher Electricity Demand
-```
+Mean wind speed
 
-Historical weather therefore remains useful for **training and evaluating the model**.
+Mean wind direction
 
-However, a true future forecast requires future weather information or a documented weather-estimation method.
+Mean pressure
 
----
+Mean solar radiation
 
-# ⚠️ Current Project Limitation
+Total solar energy
 
-The current model predicts **daily electricity consumption**.
+Mean/max UV-related information where available
 
-The overall project objective is broader:
+The resulting weather data is merged with electricity data using:
 
-```text
-Next 7 Days
-Next 30 Days
-```
+City + Date
 
-Therefore, the current daily prediction model still needs to be converted into a proper **multi-day forecasting system**.
+Data Integration
 
-The OpenWeatherMap issue also means that the final application still needs a solution for obtaining future weather conditions.
+After processing the three sources, the project creates an integrated
+daily dataset containing:
 
----
+Electricity
++
+Household Metadata
++
+Weather
++
+Calendar
++
+Historical Demand Features
 
-# 🚧 Remaining Milestones
+The feature-engineering notebook saved the master merged dataset as:
 
-## Milestone 1 — Improve Forecast Validation
+processed_data/powerplus_daily_merged.csv
 
-**Status: ⏳ Pending**
+The model dataset was saved as:
 
-Further validation is required to ensure that the model genuinely predicts future electricity demand.
+processed_data/powerplus_model_data.csv
 
-Tasks:
+The model-ready dataset used for the ML baseline contained:
 
-* Validate chronological predictions
-* Check possible data leakage
-* Compare predicted vs actual consumption
-* Analyze prediction errors
-* Test different Decision Tree configurations
-* Establish a reliable baseline model
+19,181 rows
+91 columns
+6 cities
+59 households
 
----
+The date range used in that model-ready dataset was:
 
-# Milestone 2 — Build 7-Day Forecast
+2023-08-15 to 2024-11-27
 
-**Status: ⏳ Pending**
+The modelling target was:
 
-Convert the current daily prediction model into a **next-7-day forecasting system**.
+electricity_kwh
 
-Target output:
+Feature Engineering
 
-```text
-Day 1 → predicted kWh
-Day 2 → predicted kWh
-Day 3 → predicted kWh
-Day 4 → predicted kWh
-Day 5 → predicted kWh
-Day 6 → predicted kWh
-Day 7 → predicted kWh
+Feature engineering was performed to provide the model with information
+about previous demand, household characteristics, weather, and calendar
+patterns.
 
-Total → predicted 7-day consumption
-```
+Historical Demand Features
 
----
+Lag features were created for:
 
-# Milestone 3 — Build 30-Day Forecast
+lag_1_day_kwh
+lag_2_day_kwh
+lag_3_day_kwh
+lag_7_day_kwh
+lag_14_day_kwh
+lag_30_day_kwh
 
-**Status: ⏳ Pending**
+Rolling demand features included:
 
-Extend the forecasting system to estimate:
+rolling_3_day_avg_kwh
+rolling_7_day_avg_kwh
+rolling_14_day_avg_kwh
+rolling_30_day_avg_kwh
 
-```text
-Day 1
-Day 2
-...
-Day 30
-```
+These features allow the model to use recent consumption history.
 
-and calculate:
+Calendar Features
 
-```text
-Total predicted monthly electricity consumption
-```
+Calendar features include:
 
----
+Year
 
-# Milestone 4 — Future Weather Integration
+Month
 
-**Status: ⏳ Pending**
+Day
 
-Find a reliable method to obtain future weather information.
+Day of week
 
-Possible approaches include:
+Week of year
 
-```text
-Weather Forecast API
-        OR
-Alternative Weather Provider
-        OR
-Historical/Seasonal Weather Estimation
-```
+Day of year
 
-The final choice will be documented according to availability and project requirements.
+Weekend indicator
 
----
+Season
 
-# Milestone 5 — Consumer Input System
+These features help capture recurring calendar and seasonal patterns.
 
-**Status: ⏳ Pending**
-
-Create an interface where the consumer can enter household information.
-
-Example:
-
-```text
-City: Islamabad
-
-Number of people: 6
-
-Air Conditioners: 3
-
-Refrigerators: 2
-
-Washing Machines: 1
-
-Fans: 6
-
-Water Pump: 1
-
-Microwave: 1
-
-...
-```
-
-The consumer will not need to understand the machine-learning process.
-
----
-
-# Milestone 6 — Consumer Profile → Prediction
-
-**Status: ⏳ Pending**
-
-The consumer information will be transformed into the same features used during model training.
-
-The final pipeline will be:
-
-```text
-Consumer Input
-      │
-      ▼
-Consumer Profile
-      │
-      ▼
 Household Features
-      │
-      +
-Weather Features
-      │
-      +
-Historical Consumption
-      │
-      ▼
-Feature Engineering
-      │
-      ▼
-Trained Decision Tree
-      │
-      ▼
-Electricity Demand
-```
 
----
+Household and appliance information is retained as predictive
+information, including:
 
-# Milestone 7 — Final PowerPlus Output
+Residents
 
-**Status: ⏳ Pending**
+Property characteristics
 
-The final system should provide an easy-to-understand result such as:
+Building age
 
-```text
-⚡ Estimated Electricity Demand
+Rooms
 
-Next 7 Days:
-XX kWh
+Air conditioners
 
-Next 30 Days:
-XX kWh
+Refrigerators
 
-Average Daily Demand:
-XX kWh
-```
+Fans
 
-Additional visualizations can include:
+Water pumps
 
-* Daily predicted consumption
-* Weekly demand trend
-* Monthly demand trend
-* Actual vs predicted consumption
-* Weather vs electricity demand
+Electric appliances
 
----
+Other electronic devices
 
-# Milestone 8 — Final Application
+A derived house_age feature and total_appliance_count were also
+included.
 
-**Status: ⏳ Pending**
+Leakage Prevention
 
-The final PowerPlus application will connect:
+Leakage prevention is an important part of the modelling workflow.
 
-```text
-Consumer
-   │
-   ▼
-Household Input
-   │
-   ▼
-Weather Data
-   │
-   ▼
-Historical Consumption
-   │
-   ▼
-Feature Engineering
-   │
-   ▼
-Decision Tree Model
-   │
-   ▼
+Same-day electricity measurement fields such as:
+
+readings
+avg_power_kw
+max_power_kw
+min_power_kw
+coverage_pct
+
+were not used as predictive inputs for forecasting the target because
+these values are derived from the electricity observation for the day
+being predicted.
+
+Using them would allow information from the prediction day to enter the
+model.
+
+The modelling workflow therefore focuses on information that would be
+available when making a forecast.
+
+Train/Test Strategy
+
+Because electricity demand is a time-dependent problem, the ML notebook
+uses a chronological train/test split rather than a random split.
+
+This prevents future observations from being used to train the model
+before earlier observations are evaluated.
+
+The preprocessing pipeline also uses:
+
+ColumnTransformer
+Pipeline
+OneHotEncoder
+SimpleImputer
+
+to handle categorical and numerical features consistently.
+
+ML Baseline
+
+The first machine-learning model is a:
+
+DecisionTreeRegressor
+
+The Decision Tree was selected as the initial nonlinear regression model
+because it can capture relationships between electricity demand and
+household, weather, calendar, and historical-demand features.
+
+The model was evaluated using:
+
+MAE --- Mean Absolute Error
+
+RMSE --- Root Mean Squared Error
+
+R² --- Coefficient of Determination
+
+Baseline Comparison
+
+The ML notebook compares the Decision Tree against simple forecasting
+baselines.
+
+The evaluated baselines were:
+
+Training Mean
+
+Previous Day (lag_1)
+
+Previous Week (lag_7)
+
+Tuned Decision Tree
+
+The recorded test results were:
+
+Model                            MAE       RMSE          R²
+
+Previous Day (lag_1)      0.091112   0.700165    0.887494
+Decision Tree --- Tuned     0.102742   0.765637    0.865470
+Previous Week (lag_7)     0.138870   1.107834    0.718341
+Training Mean               1.797734   2.446776   -0.373924
+
+For this evaluation, the Previous Day (lag_1) baseline achieved the
+lowest MAE.
+
+This is an important result: a simple previous-day forecasting strategy
+performed better than the tuned Decision Tree on the recorded test set.
+
+Therefore, the Decision Tree should not automatically be considered the
+best forecasting method simply because it is an ML model.
+
+Decision Tree Tuning
+
+Important Decision Tree hyperparameters were tuned using chronological
+validation.
+
+The purpose of tuning was to control tree complexity and improve
+generalization.
+
+The tuning process focused on parameters such as:
+
+max_depth
+
+min_samples_split
+
+min_samples_leaf
+
+The tuned Decision Tree was then evaluated on the held-out test period.
+
+Forecasting
+
+The ML notebook also implements recursive forecasting.
+
 7-Day Forecast
-   │
-   ▼
+
+The forecasting workflow can generate a recursive:
+
+7-day electricity demand forecast
+
+The model uses previous predictions as historical inputs for subsequent
+forecast days.
+
 30-Day Forecast
-```
 
+The same recursive approach is extended to:
 
----
+30-day electricity demand forecast
 
-# 🛠️ Technology Stack
+This provides a longer forecast horizon for future electricity-demand
+planning.
 
-```text
+Future Weather Limitation
+
+The current dataset contains historical weather, not actual future
+weather forecasts.
+
+Therefore, future-weather handling works in two ways:
+
+Option 1 --- Future Weather Input
+
+If a future-weather dataset is supplied, the forecasting functions can
+use it.
+
+Option 2 --- Historical Seasonal Proxy
+
+If future weather is not supplied, the notebook can create a historical
+seasonal weather proxy for demonstration.
+
+The historical seasonal proxy is not a real weather forecast and
+should not be presented as one.
+
+Model Outputs
+
+The ML notebook is designed to save:
+
+Trained model pipeline
+
+Model metrics
+
+Feature information
+
+Forecast outputs
+
+Comparison results
+
+These outputs can later be used by the final application/dashboard.
+
+Project Structure
+
+A simplified project structure is:
+
+Project-Electricity-Demand-Forecasting/
+│
+├── city-wise_house_dataset/
+│   ├── Islamabad/
+│   ├── Karachi/
+│   ├── Lahore/
+│   ├── Multan/
+│   ├── Peshawar/
+│   └── Skardu/
+│
+├── weather_dataset/
+│   ├── Islamabad.csv
+│   ├── Karachi.csv
+│   ├── Lahore.csv
+│   ├── Multan.csv
+│   ├── Peshawar.csv
+│   └── Skardu.csv
+│
+├── metadata_ultimate.xlsx
+│
+├── processed_data/
+│   ├── daily_electricity_clean.csv
+│   ├── powerplus_daily_merged.csv
+│   ├── powerplus_model_data.csv
+│   └── ...
+│
+├── PowerPlus_Data_Processing_Feature_Engineering.ipynb
+├── PowerPlus_ML_Baseline_and_Forecasting.ipynb
+└── README.md
+
+Technologies Used
+
 Python
+
 Pandas
+
 NumPy
-Scikit-learn
+
 Matplotlib
+
+Scikit-learn
+
+Joblib
+
 Jupyter Notebook
+
 VS Code
-Git
-GitHub
-```
 
+Main Python Libraries
 
----
+pandas
+numpy
+matplotlib
+scikit-learn
+joblib
 
-# 🎯 Final Project Goal
+How to Run
 
-The final PowerPlus system will allow a consumer to provide information about their household and appliances.
+1. Clone the repository
 
-The system will combine that information with historical consumption and weather information to estimate future electricity demand.
+git clone <your-repository-url>
+cd Project-Electricity-Demand-Forecasting
 
-### Final concept
+2. Install dependencies
 
-```text
-                 ⚡ POWERPLUS
-                     │
-                     ▼
-             Consumer Profile
-                     │
-          ┌──────────┼──────────┐
-          ▼          ▼          ▼
-      Household   Appliances   Location
-          │          │          │
-          │          │          ▼
-          │          │      Future Weather
-          │          │          │
-          └──────────┼──────────┘
-                     ▼
-             Historical Usage
-                     │
-                     ▼
-            Feature Engineering
-                     │
-                     ▼
-             Decision Tree
-                     │
-              ┌──────┴──────┐
-              ▼             ▼
-          7-Day Demand   30-Day Demand
-              │             │
-              └──────┬──────┘
-                     ▼
-              Consumer Result
-```
+pip install pandas numpy matplotlib scikit-learn joblib openpyxl jupyter
 
----
+3. Run the notebooks in order
+
+First run:
+
+PowerPlus_Data_Processing_Feature_Engineering.ipynb
+
+Then run:
+
+PowerPlus_ML_Baseline_and_Forecasting.ipynb
+
+The second notebook depends on the processed/model-ready data generated
+by the previous workflow.
+
+Key Findings
+
+The current ML evaluation produced several useful findings:
+
+Historical electricity demand is strongly useful for forecasting.
+
+The previous-day demand (lag_1) is a strong baseline.
+
+The previous-day baseline achieved lower MAE than the tuned Decision
+Tree on the recorded test set.
+
+The previous-week baseline performed worse than the previous-day
+baseline.
+
+The training-mean baseline performed substantially worse than the
+time-series baselines.
+
+Household, weather, calendar, and historical-demand features are
+available for more advanced modelling.
+
+Forecasting must avoid same-day target leakage.
+
+Future weather availability is an important consideration for
+real-world forecasting.
+
+Current Limitations
+
+The current project has several limitations:
+
+The available weather data is historical rather than a genuine
+future weather forecast.
+
+The current Decision Tree did not outperform the simple previous-day
+baseline on the recorded test evaluation.
+
+Longer recursive forecasts can accumulate prediction errors.
+
+Household electricity behaviour can vary considerably between
+households.
+
+The current dataset covers a limited historical period compared with
+long-term grid datasets.
+
+These limitations should be considered before deploying the forecasting
+system in a production environment.
+
+Next Development Stage
+
+The next stage of PowerPlus can focus on:
+
+Comparing additional regression/time-series models.
+
+Improving forecasting accuracy.
+
+Testing stronger feature-selection strategies.
+
+Evaluating models across individual cities and households.
+
+Improving 7-day and 30-day forecast reliability.
+
+Building the electricity bill calculator.
+
+Integrating the trained model into the final application/dashboard.
+
+Team Workflow
+
+The PowerPlus project is being developed as a team project with
+responsibilities covering:
+
+Electricity data processing
+
+Household metadata
+
+Weather processing
+
+Data integration
+
+EDA and feature engineering
+
+Train/test modelling
+
+Consumption estimation
+
+7/30-day forecasting
+
+Bill calculation
+
+Final application/dashboard
+
+Conclusion
+
+PowerPlus establishes an end-to-end foundation for household electricity
+demand forecasting.
+
+The project transforms raw electricity measurements into daily kWh
+consumption, integrates household and weather information, creates
+historical demand and calendar features, and evaluates machine-learning
+forecasting against simple time-series baselines.
+
+At the current milestone, the project has completed data processing,
+feature engineering, ML baseline modelling, Decision Tree tuning, and
+recursive 7-day/30-day forecasting.
+
+The most important current modelling result is that the previous-day
+demand baseline outperformed the tuned Decision Tree on the recorded
+test set, demonstrating why simple forecasting baselines are essential
+when evaluating machine-learning models.
+
+The next stage is to improve the forecasting approach and integrate the
+modelling pipeline into the final PowerPlus application.
