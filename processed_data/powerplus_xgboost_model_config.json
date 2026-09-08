@@ -5,7 +5,6 @@
   "house_column": "house",
   "feature_columns": [
     "city",
-    "house",
     "House",
     "City",
     "Owner/Rented",
@@ -85,7 +84,21 @@
     "rolling_14_day_avg_kwh",
     "rolling_30_day_avg_kwh",
     "house_age",
-    "total_appliance_count"
+    "total_appliance_count",
+    "temperature_mean_weather",
+    "humidity_mean_weather",
+    "dew_mean_weather",
+    "wind_speed_mean_weather",
+    "wind_direction_mean_weather",
+    "pressure_mean_weather",
+    "solar_radiation_mean_weather",
+    "temperature_max_weather",
+    "humidity_max_weather",
+    "wind_speed_max_weather",
+    "solar_radiation_max_weather",
+    "uv_index_max_weather",
+    "precipitation_sum_weather",
+    "solar_energy_sum_weather"
   ],
   "numeric_features": [
     "No. of people (Temp+Perm)",
@@ -154,11 +167,24 @@
     "rolling_14_day_avg_kwh",
     "rolling_30_day_avg_kwh",
     "house_age",
-    "total_appliance_count"
+    "total_appliance_count",
+    "temperature_mean_weather",
+    "humidity_mean_weather",
+    "dew_mean_weather",
+    "wind_speed_mean_weather",
+    "wind_direction_mean_weather",
+    "pressure_mean_weather",
+    "solar_radiation_mean_weather",
+    "temperature_max_weather",
+    "humidity_max_weather",
+    "wind_speed_max_weather",
+    "solar_radiation_max_weather",
+    "uv_index_max_weather",
+    "precipitation_sum_weather",
+    "solar_energy_sum_weather"
   ],
   "categorical_features": [
     "city",
-    "house",
     "House",
     "City",
     "Owner/Rented",
@@ -182,7 +208,8 @@
     "min_power_kw",
     "expected_readings",
     "coverage_pct",
-    "low_coverage_flag"
+    "low_coverage_flag",
+    "house"
   ],
   "train_end_date": "2024-08-24",
   "test_start_date": "2024-08-25",
@@ -193,5 +220,10 @@
     "subsample": 0.8,
     "colsample_bytree": 1.0
   },
-  "data_file": "d:\\Project-Electricity-Demand-Forecasting\\processed_data\\powerplus_model_data.csv"
+  "data_file": "d:\\Project-Electricity-Demand-Forecasting\\processed_data\\powerplus_model_data.csv",
+  "weather_file": "d:\\Project-Electricity-Demand-Forecasting\\processed_data\\daily_weather.csv",
+  "weather_merge_keys": {
+    "city": "city",
+    "date": "date"
+  }
 }
