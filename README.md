@@ -11,24 +11,6 @@ modelling, and short-term demand forecasting**.
 
 ------------------------------------------------------------------------
 
-## Project Status
-
-  Stage                                       Status
-  ------------------------------------------- ------------
-  Raw electricity data processing             Completed
-  Daily electricity consumption calculation   Completed
-  Household metadata processing               Completed
-  Weather data processing                     Completed
-  Data integration                            Completed
-  Data quality checks                         Completed
-  Feature engineering                         Completed
-  Model-ready dataset                         Completed
-  ML baseline modelling                       Completed
-  Decision Tree tuning                        Completed
-  7-day forecasting                           Completed
-  30-day forecasting                          Completed
-  Final application/dashboard                 Completed
-
 ------------------------------------------------------------------------
 
 ## Web Dashboard
