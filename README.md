@@ -1003,5 +1003,3 @@ R²   = 0.9020
 The system supports **1-day, 7-day, and 30-day recursive electricity-demand forecasting** and is integrated into a web application where users can enter household and appliance information without manually providing technical model features such as lags, rolling averages, or weather variables.
 
 PowerPlus therefore provides a foundation for a practical **household electricity demand forecasting and energy-management decision-support system**.
-
-The README you uploaded is currently still written around the older Decision Tree milestone; in particular, its current status, baseline-comparison, limitations, and conclusion sections describe Decision Tree as the main model.   
