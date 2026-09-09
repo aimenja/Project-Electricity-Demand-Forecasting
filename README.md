@@ -27,7 +27,36 @@ modelling, and short-term demand forecasting**.
   Decision Tree tuning                        Completed
   7-day forecasting                           Completed
   30-day forecasting                          Completed
-  Final application/dashboard                 Next stage
+  Final application/dashboard                 Completed
+
+------------------------------------------------------------------------
+
+## Web Dashboard
+
+The final stage of the project lives in [`dashboard/`](dashboard/) — a web
+application that turns the trained forecasting model into something a
+non-technical user can operate from a browser.
+
+```bash
+cd dashboard
+python3 -m venv .venv
+./.venv/bin/pip install -r requirements.txt
+./.venv/bin/python scripts/train_profile_model.py
+./run.sh                 # http://127.0.0.1:8000
+./run.sh --share         # also prints a public link for any device
+```
+
+It lets the user pick a city and house, edit the household and appliance
+inputs, and forecast 1, 7 or 30 days ahead, charted against recorded
+history. A companion "profile" model answers the appliance what-if
+question — how predicted daily kWh changes per additional appliance —
+which the forecasting model cannot do, because it assigns the appliance
+features an importance of ~0 once it can see recent consumption.
+
+The dashboard reads `processed_data/` directly, so re-exporting the model
+from the notebooks updates it with no code changes. See
+[`dashboard/README.md`](dashboard/README.md) for details, including known
+limitations inherited from the dataset.
 
 ------------------------------------------------------------------------
 

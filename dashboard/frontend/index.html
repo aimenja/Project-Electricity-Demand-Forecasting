@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PowerPlus — Electricity Demand Dashboard</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Power<span>Plus</span> — Electricity Demand Dashboard</h1>
+      <p>Household electricity forecasting with the tuned XGBoost model</p>
+    </div>
+    <div class="model-badge" id="modelBadge"></div>
+  </header>
+
+  <div class="layout">
+    <aside class="panel">
+      <h2>Inputs</h2>
+      <p class="hint">Pick a household, then adjust any field to explore a what-if scenario. Everything you don't set is filled from the house's latest profile.</p>
+
+      <fieldset>
+        <legend>Location &amp; horizon</legend>
+        <label><span>City</span><select id="city"></select></label>
+        <label><span>House</span><select id="house"></select></label>
+        <label><span>Forecast start date</span><input type="date" id="startDate"></label>
+        <label>
+          <span>Forecast horizon</span>
+          <div class="horizon" id="horizon">
+            <button type="button" data-days="1">1 day</button>
+            <button type="button" data-days="7" aria-pressed="true">7 days</button>
+            <button type="button" data-days="30">30 days</button>
+          </div>
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Household</legend>
+        <div id="householdFields"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Appliances</legend>
+        <div id="applianceFields" class="grid-2"></div>
+      </fieldset>
+
+      <div class="actions">
+        <button type="button" class="primary" id="run">Run forecast</button>
+        <button type="button" class="ghost" id="reset" title="Restore this house's recorded values">Reset</button>
+      </div>
+      <p class="status" id="status"></p>
+    </aside>
+
+    <main>
+      <div id="notices"></div>
+
+      <section class="kpis" id="kpis"></section>
+
+      <section class="panel">
+        <h2>Consumption history and forecast</h2>
+        <p class="hint">Recorded daily consumption for the selected house, followed by the recursive forecast from the tuned XGBoost model.</p>
+        <div class="legend">
+          <span><i style="background:#0f766e"></i>Recorded history</span>
+          <span><i style="background:#b45309"></i>Forecast</span>
+        </div>
+        <div class="chart-wrap"><svg id="chart" role="img" aria-label="Electricity consumption history and forecast"></svg></div>
+      </section>
+
+      <section class="panel">
+        <h2>Appliance what-if sensitivity</h2>
+        <p class="hint">Produced by a separate <b>profile model</b> trained without demand-history features, because the forecasting model assigns zero importance to appliance counts and cannot answer this question. Values are model sensitivity, not measured per-appliance consumption.</p>
+        <div id="sensitivity"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Models</h2>
+        <p class="hint">The dashboard uses two models: the tuned XGBoost forecaster for the timeline above, and a profile model for the appliance what-if.</p>
+        <div id="modelInfo"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
