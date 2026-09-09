@@ -42,12 +42,6 @@ limitations inherited from the dataset.
 
 ------------------------------------------------------------------------
 
-Yes. Based on your **current PowerPlus implementation**, your README should be updated from the old Decision Tree stage to the **final XGBoost + weather + user-input forecasting system**.
-
-Below is **copy-paste-ready README text**. I have kept the structure professional and removed outdated claims.
-
----
-
 # PowerPlus — Electricity Demand Forecasting
 
 PowerPlus is a machine-learning project for predicting **total household electricity demand** and forecasting future electricity consumption using historical electricity usage, household characteristics, weather conditions, calendar patterns, and historical demand features.
