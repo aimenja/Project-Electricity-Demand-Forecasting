@@ -252,10 +252,10 @@ class PowerPlusEngine:
             )
         if mean_daily < PLAUSIBLE_DAILY_KWH:
             flags.append(
-                f"This house averages {mean_daily:.4f} kWh/day in the dataset. A real "
-                f"household uses roughly 10-40 kWh/day, which suggests a units problem in "
-                f"the upstream kW-to-kWh conversion. Forecasts below are the model's true "
-                f"output on this data and are not rescaled."
+                f"This house averages {mean_daily:.4f} kWh/day in the dataset, far below "
+                f"the 10-40 kWh/day a typical household uses. Check how many minute "
+                f"readings per day survived processing (the 'readings' column): a figure "
+                f"far below 1440 means the raw timestamps were not parsed in full."
             )
         return {
             "mean_daily_kwh": round(mean_daily, 4),
@@ -265,10 +265,16 @@ class PowerPlusEngine:
         }
 
     def default_selection(self) -> dict:
-        """Pick a house whose recorded consumption is in a physically plausible range."""
+        """Open on a representative house: the one whose average use is closest to the median.
+
+        Houses under PLAUSIBLE_DAILY_KWH are skipped, so a regression in the processing
+        notebook cannot make a broken house the first thing people see.
+        """
         means = self.df.groupby([self.city_col, self.house_col])[self.target].mean()
-        plausible = means[means >= PLAUSIBLE_DAILY_KWH].sort_values(ascending=False)
-        city, house = (plausible.index[0] if len(plausible) else means.idxmax())
+        pool = means[means >= PLAUSIBLE_DAILY_KWH]
+        if pool.empty:
+            pool = means
+        city, house = (pool - pool.median()).abs().idxmin()
         return {"city": str(city), "house": str(house)}
 
     def house_profile(self, city: str, house: str) -> dict:
