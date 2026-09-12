@@ -89,22 +89,22 @@ newer releases cannot unpickle its column transformer.
 |---|---|---|
 | File | `processed_data/powerplus_xgboost_forecast_model.pkl` (from the notebooks) | `dashboard/data/powerplus_profile_model.pkl` (trained here) |
 | Uses demand history | Yes (lag + rolling) | No |
-| Test MAE / R² | 0.0931 / 0.892 | 0.1261 / 0.827 |
+| Test MAE / R² | 3.39 kWh / 0.851 | 6.49 kWh / 0.544 |
 | Drives | Forecast chart and totals | Appliance what-if panel |
 
-The forecasting model draws 68% of its signal from `rolling_3_day_avg_kwh` and
-`rolling_7_day_avg_kwh`, and gives the appliance features a combined importance of
-**0.0014** — all of it on `Wall Fans`, with every other appliance at exactly 0.0. Only 30 of
-its 235 encoded features are used at all. Appliance counts are constant over time within a
-house, so once the model sees yesterday's consumption it has no reason to learn from them.
-That makes it a strong short-horizon forecaster but unable to answer "what if I add an air
+The forecasting model uses 104 of its 235 encoded features and takes 70% of its signal
+from recent consumption, led by `lag_1_day_kwh` (29%) and `rolling_3_day_avg_kwh` (29%).
+Appliance counts carry a combined importance of about 0.05 and weather about 0.11, so both
+matter, but only a little next to yesterday's usage. Appliance counts are constant over time
+within a house, so once the model can see recent consumption it has little reason to lean on
+them. That makes it a good short-horizon forecaster but a weak tool for "what if I add an air
 conditioner".
 
 The 14 `*_weather` columns the notebook adds are a second, identical copy of weather columns
-already present in the model dataset (the merge against `daily_weather.csv` collides on
-column names and pandas suffixes the duplicates). The model gives all 14 an importance of
-exactly 0.0. The dashboard reproduces them by mirroring the originals rather than re-reading
-the weather file.
+already in the model dataset: the merge against `daily_weather.csv` collides on column names
+and pandas suffixes the duplicates. The two copies split the weather importance roughly in
+half. The dashboard reproduces them by mirroring the originals rather than re-reading the
+weather file.
 
 `scripts/train_profile_model.py` therefore trains a companion model on the same data with the
 lag/rolling features **and the house-identity columns** removed, forcing household and
@@ -115,17 +115,21 @@ appliance characteristics to carry the signal. Each panel states which model pro
 These are properties of the upstream dataset, not of the dashboard. The dashboard displays
 the models' true output and does not rescale anything.
 
-1. **Implausible consumption scale.** 53 of the 59 houses average under 1 kWh/day (median
-   ~0.014 kWh/day) where a real household uses roughly 10–40 kWh/day. This points to a units
-   problem in the minute-level kW → daily kWh conversion. Only four houses sit in a plausible
-   range, so the dashboard defaults to one of them and warns on the others.
-2. **`Islamabad / House#41`** — the repo's own default forecast house — ends with 118
-   consecutive days of exactly 0 kWh, so its forecast is flat and near zero.
-3. **Weak appliance signal.** Even the profile model moves only slightly with appliance
-   counts. With 59 houses whose characteristics never change over time, there are few
-   effective samples to learn between-household differences from.
-4. **Future weather is a seasonal proxy**, averaged from historical weather for the selected
+1. **Future weather is a seasonal proxy**, averaged from historical weather for the selected
    city. It is not a real forecast, so longer horizons carry more uncertainty.
+2. **The appliance what-if is approximate.** The profile model has to predict a house's
+   usage without any history, and with only 59 houses whose characteristics never change
+   there is little to learn from: test R² is 0.54 (MAE 6.5 kWh/day) against 0.93 on the
+   training data. Treat its per-appliance figures as directional, not as metered values.
+3. **`Islamabad / House#41`** ends with 12 consecutive days of exactly 0 kWh, so its
+   forecast starts low. The dashboard warns when you select it.
+
+Earlier versions of this dashboard warned that 53 of 59 houses averaged under 1 kWh/day.
+That was a bug in `PowerPlus_Data_Processing_Feature_Engineering.ipynb`, not a property of
+the data: midnight readings are stored as bare dates and every other minute with a time,
+and `pd.to_datetime` inferred the format from the first row, so in 63 of 69 files it
+silently dropped every reading except midnight. Parsing with `format="mixed"` keeps all
+1,440 readings a day, and every house now averages between 1.3 and 49 kWh/day.
 
 ## Layout
 
