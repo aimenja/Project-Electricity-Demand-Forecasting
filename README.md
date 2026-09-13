@@ -74,7 +74,6 @@ The project covers the complete workflow from raw electricity-data processing th
 | 1-day forecasting                         | Completed |
 | 7-day forecasting                         | Completed |
 | 30-day forecasting                        | Completed |
-| FastAPI backend                           | Completed |
 | Web application/dashboard                 | Completed |
 
 ---
@@ -849,6 +848,7 @@ The current project has several limitations:
 8. Real-world deployment would benefit from actual weather forecasts and continuous model monitoring.
 
 ---
+
 
 # Future Development
 
